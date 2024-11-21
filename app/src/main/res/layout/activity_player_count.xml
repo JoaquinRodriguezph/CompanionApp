@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#FFFFFF">
+    android:padding="16dp">
 
+    <!-- Text asking for number of players -->
     <TextView
-        android:id="@+id/playerCountText"
+        android:id="@+id/players_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="How many number of players?"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:textColor="#000000" />
+        android:textSize="20sp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Checkboxes -->
+    <CheckBox
+        android:id="@+id/checkbox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 1" />
+    <CheckBox
+        android:id="@+id/checkbox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2" />
+    <CheckBox
+        android:id="@+id/checkbox3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 3" />
+    <CheckBox
+        android:id="@+id/checkbox4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 4" />
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:enabled="false"
+    android:layout_marginTop="24dp" />
 </LinearLayout>
