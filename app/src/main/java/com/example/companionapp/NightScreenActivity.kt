@@ -36,6 +36,21 @@ class NightScreenActivity : AppCompatActivity() {
             playerContainer.addView(playerView)
         }
 
+        findViewById<Button>(R.id.calculator_button).setOnClickListener {
+            val intent = Intent(this, CalculatorActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.question_button).setOnClickListener {
+            val intent = Intent(this, RulesActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.map_button).setOnClickListener {
+            val intent = Intent(this, MapPopUpActivity::class.java)
+            startActivity(intent)
+        }
+
         // Handle End Night button
         findViewById<Button>(R.id.end_night_button).setOnClickListener {
             val intent = Intent(this, EndNightActivity::class.java).apply {

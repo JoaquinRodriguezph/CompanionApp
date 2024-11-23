@@ -21,4 +21,6 @@ class MapActivity : AppCompatActivity() {
             startActivity(nightIntent)
         }
     }
+
+
 }
