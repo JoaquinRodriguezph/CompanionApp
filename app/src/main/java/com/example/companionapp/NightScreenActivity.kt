@@ -1,5 +1,6 @@
 package com.example.companionapp
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -51,6 +52,18 @@ class NightScreenActivity : AppCompatActivity() {
             playerContainer.addView(playerView)
         }
 
+        // End Night button clears SharedPreferences
+        findViewById<Button>(R.id.end_night_button).setOnClickListener {
+            clearCheckboxState()
+            val intent = Intent(this, EndNightActivity::class.java).apply {
+                putExtra("currentNight", currentNight)
+                putStringArrayListExtra("players", ArrayList(players))
+                putStringArrayListExtra("colors", ArrayList(colors))
+            }
+            startActivity(intent)
+            finish()
+        }
+
         // Buttons
         findViewById<Button>(R.id.calculator_button).setOnClickListener {
             startActivity(Intent(this, CalculatorActivity::class.java))
@@ -63,16 +76,11 @@ class NightScreenActivity : AppCompatActivity() {
         findViewById<Button>(R.id.map_button).setOnClickListener {
             startActivity(Intent(this, MapPopUpActivity::class.java))
         }
+    }
 
-        findViewById<Button>(R.id.end_night_button).setOnClickListener {
-            val intent = Intent(this, EndNightActivity::class.java).apply {
-                putExtra("currentNight", currentNight)
-                putStringArrayListExtra("players", ArrayList(players))
-                putStringArrayListExtra("colors", ArrayList(colors))
-            }
-            startActivity(intent)
-            finish()
-        }
+    private fun clearCheckboxState() {
+        val sharedPreferences = getSharedPreferences("PlayerTurnPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
     }
 
     private fun getColorFromName(colorName: String): String {

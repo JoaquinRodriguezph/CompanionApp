@@ -1,6 +1,8 @@
 package com.example.companionapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
@@ -10,9 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 
 class PlayerTurnActivity : AppCompatActivity() {
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_turn)
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("PlayerTurnPrefs", Context.MODE_PRIVATE)
 
         // Get player data from the intent
         val playerName = intent.getStringExtra("playerName") ?: "Player"
@@ -31,6 +38,10 @@ class PlayerTurnActivity : AppCompatActivity() {
         playerItems.forEach { item ->
             val checkBox = CheckBox(this)
             checkBox.text = item
+            checkBox.isChecked = getCheckboxState(playerName, item) // Restore checkbox state
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                saveCheckboxState(playerName, item, isChecked) // Save checkbox state
+            }
             itemContainer.addView(checkBox)
         }
 
@@ -57,5 +68,17 @@ class PlayerTurnActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    // Save checkbox state to SharedPreferences
+    private fun saveCheckboxState(playerName: String, item: String, isChecked: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("${playerName}_$item", isChecked)
+        editor.apply()
+    }
+
+    // Retrieve checkbox state from SharedPreferences
+    private fun getCheckboxState(playerName: String, item: String): Boolean {
+        return sharedPreferences.getBoolean("${playerName}_$item", false)
     }
 }
