@@ -14,52 +14,64 @@ class NightScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_night_screen)
 
+        // Retrieve data
         val players = intent.getStringArrayListExtra("players") ?: arrayListOf()
         val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
-        val currentNight = intent.getIntExtra("currentNight", 1) // Default to night 1
+        val playerItems = intent.getSerializableExtra("playerItems") as? HashMap<String, ArrayList<String>>
+        val currentNight = intent.getIntExtra("currentNight", 1)
 
-        // Update night title dynamically
+        // Update night title
         val nightTitle = findViewById<TextView>(R.id.night_title)
         nightTitle.text = "Night $currentNight"
 
-        // Populate players and their colors
+        // Populate players dynamically
         val playerContainer = findViewById<LinearLayout>(R.id.player_container)
-        playerContainer.removeAllViews() // Clear any existing views (precautionary)
+        playerContainer.removeAllViews()
 
         for (i in players.indices) {
             val playerView = TextView(this)
             playerView.text = players[i]
             playerView.setBackgroundColor(Color.parseColor(getColorFromName(colors[i])))
-            playerView.setTextColor(Color.BLACK) // Ensure text is visible
+            playerView.setTextColor(Color.WHITE)
             playerView.textSize = 18f
             playerView.setPadding(16, 16, 16, 16)
+
+            // Set onClickListener for PlayerTurnActivity
+            playerView.setOnClickListener {
+                val intent = Intent(this, PlayerTurnActivity::class.java).apply {
+                    putExtra("playerName", players[i])
+                    putStringArrayListExtra("playerItems", playerItems?.get(players[i]) ?: arrayListOf())
+                    putStringArrayListExtra("players", ArrayList(players))
+                    putStringArrayListExtra("colors", ArrayList(colors))
+                    putExtra("playerItemsMap", HashMap(playerItems))
+                    putExtra("currentNight", currentNight)
+                }
+                startActivity(intent)
+            }
             playerContainer.addView(playerView)
         }
 
+        // Buttons
         findViewById<Button>(R.id.calculator_button).setOnClickListener {
-            val intent = Intent(this, CalculatorActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, CalculatorActivity::class.java))
         }
 
         findViewById<Button>(R.id.question_button).setOnClickListener {
-            val intent = Intent(this, RulesActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RulesActivity::class.java))
         }
 
         findViewById<Button>(R.id.map_button).setOnClickListener {
-            val intent = Intent(this, MapPopUpActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MapPopUpActivity::class.java))
         }
 
-        // Handle End Night button
         findViewById<Button>(R.id.end_night_button).setOnClickListener {
             val intent = Intent(this, EndNightActivity::class.java).apply {
-                putExtra("currentNight", currentNight) // Pass the current night to EndNightActivity
-                putStringArrayListExtra("players", ArrayList(players)) // Pass players
-                putStringArrayListExtra("colors", ArrayList(colors))   // Pass colors
+                putExtra("currentNight", currentNight)
+                putStringArrayListExtra("players", ArrayList(players))
+                putStringArrayListExtra("colors", ArrayList(colors))
             }
             startActivity(intent)
-            finish() // Close this activity to prevent going back to it
+            finish()
         }
     }
 
@@ -69,7 +81,7 @@ class NightScreenActivity : AppCompatActivity() {
             "Blue" -> "#0000FF"
             "Green" -> "#008000"
             "Yellow" -> "#FFFF00"
-            else -> "#FFFFFF" // Default to white if color is unknown
+            else -> "#FFFFFF"
         }
     }
 }

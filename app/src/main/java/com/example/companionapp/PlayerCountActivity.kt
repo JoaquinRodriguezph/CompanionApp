@@ -14,6 +14,7 @@ class PlayerCountActivity : AppCompatActivity() {
     private val selectedColors = mutableMapOf<Int, String>() // Map player index to selected color
     private val availableColors = mutableListOf("Red", "Blue", "Green", "Yellow")
     private val playerNames = listOf("Player 1", "Player 2", "Player 3", "Player 4") // Default player names
+    private val selectedPlayers = mutableListOf<String>() // List of selected players
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,33 +32,30 @@ class PlayerCountActivity : AppCompatActivity() {
         checkboxes.forEachIndexed { index, checkbox ->
             checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    // Show color picker when a box is checked
+                    val playerName = playerNames[index]
                     showColorPicker(index, checkbox)
+                    selectedPlayers.add(playerName)
                 } else {
-                    // Remove player color selection if unchecked
+                    val playerName = playerNames[index]
+                    selectedPlayers.remove(playerName)
                     val removedColor = selectedColors.remove(index)
                     removedColor?.let { availableColors.add(it) }
                     checkbox.setBackgroundColor(Color.TRANSPARENT)
                 }
-                // Update Confirm Button state
                 updateConfirmButtonState(confirmButton)
             }
         }
 
         confirmButton.setOnClickListener {
-            if (selectedColors.size >= 3) {
-                // Prepare data for next activity
-                val selectedPlayers = selectedColors.keys.map { playerNames[it] }
-                val selectedPlayerColors = selectedColors.values.toList()
-
-                // Proceed to the next activity
-                val intent = Intent(this, MapActivity::class.java).apply {
+            if (selectedPlayers.size >= 3) {
+                // Proceed to item selection
+                val intent = Intent(this, ItemSelectionActivity::class.java).apply {
                     putStringArrayListExtra("players", ArrayList(selectedPlayers))
-                    putStringArrayListExtra("colors", ArrayList(selectedPlayerColors))
+                    putStringArrayListExtra("colors", ArrayList(selectedColors.values))
                 }
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "At least 3 players need to pick a color!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "At least 3 players must be selected!", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -75,19 +73,11 @@ class PlayerCountActivity : AppCompatActivity() {
             .setTitle("Pick a color")
             .setItems(colorOptions) { _, which ->
                 val selectedColor = colorOptions[which]
-
-                // Assign color to player and remove from availability
                 selectedColors[playerIndex] = selectedColor
                 availableColors.remove(selectedColor)
-
-                // Set the checkbox background to the selected color
                 checkbox.setBackgroundColor(getColorFromName(selectedColor))
-
-                // Update Confirm Button state
-                updateConfirmButtonState(findViewById(R.id.confirm_button))
             }
             .setOnCancelListener {
-                // Reset checkbox if dialog is canceled
                 checkbox.isChecked = false
             }
             .show()
@@ -104,7 +94,6 @@ class PlayerCountActivity : AppCompatActivity() {
     }
 
     private fun updateConfirmButtonState(confirmButton: Button) {
-        // Enable Confirm Button only if 3 or more players are checked and have colors
-        confirmButton.isEnabled = selectedColors.size >= 3
+        confirmButton.isEnabled = selectedPlayers.size >= 3
     }
 }

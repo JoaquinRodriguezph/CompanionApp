@@ -1,0 +1,40 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Player title -->
+    <TextView
+        android:id="@+id/player_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Player 1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp"/>
+
+    <!-- Container for checkboxes -->
+    <LinearLayout
+        android:id="@+id/item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Buttons -->
+    <Button
+        android:id="@+id/end_night_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Escape"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/end_turn_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="End Turn"/>
+</LinearLayout>
