@@ -24,7 +24,7 @@ class EndNightActivity : AppCompatActivity() {
             nextButton.text = "Next Night"
             nextButton.setOnClickListener {
                 // Move to the next night
-                val intent = Intent(this, NightScreenActivity::class.java).apply {
+                val intent = Intent(this, ItemSelectionForNightActivity::class.java).apply {
                     putExtra("currentNight", currentNight + 1) // Increment night
                     putStringArrayListExtra("players", ArrayList(players)) // Pass players
                     putStringArrayListExtra("colors", ArrayList(colors))   // Pass colors
