@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:columnCount="15">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/back"
+        />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="3"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="4"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="5"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="6"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="7"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="8"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="9"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="10"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="11"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="12"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="13"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_row="0"
+        android:layout_column="14"
+        android:src="@drawable/back"
+        android:contentDescription="@string/bronze2"
+        android:text="@string/bronze2" />
+
+
+
+    <!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Dito yung map goiz"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_centerInParent="true"/>-->
+
+</GridLayout>
+
+
+    <!--    android:rowCount="12"-->
