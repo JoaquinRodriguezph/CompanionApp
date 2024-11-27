@@ -26,7 +26,7 @@
 
     <!-- Buttons -->
     <Button
-        android:id="@+id/end_night_button"
+        android:id="@+id/escape_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Escape"

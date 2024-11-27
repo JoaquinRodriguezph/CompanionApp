@@ -19,6 +19,8 @@ class NightScreenActivity : AppCompatActivity() {
         val players = intent.getStringArrayListExtra("players") ?: arrayListOf()
         val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
         val playerItems = intent.getSerializableExtra("playerItems") as? HashMap<String, ArrayList<String>>
+        val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
+        println("Received escapedPlayerItems: $escapedPlayerItems")
         val currentNight = intent.getIntExtra("currentNight", 1)
 
         // Update night title
@@ -33,21 +35,29 @@ class NightScreenActivity : AppCompatActivity() {
             val playerView = TextView(this)
             playerView.text = players[i]
             playerView.setBackgroundColor(Color.parseColor(getColorFromName(colors[i])))
-            playerView.setTextColor(Color.WHITE)
+            playerView.setTextColor(Color.BLACK)
             playerView.textSize = 18f
             playerView.setPadding(16, 16, 16, 16)
 
             // Set onClickListener for PlayerTurnActivity
-            playerView.setOnClickListener {
-                val intent = Intent(this, PlayerTurnActivity::class.java).apply {
-                    putExtra("playerName", players[i])
-                    putStringArrayListExtra("playerItems", playerItems?.get(players[i]) ?: arrayListOf())
-                    putStringArrayListExtra("players", ArrayList(players))
-                    putStringArrayListExtra("colors", ArrayList(colors))
-                    putExtra("playerItemsMap", HashMap(playerItems))
-                    putExtra("currentNight", currentNight)
+            if (escapedPlayerItems.containsKey(players[i])) {
+                // Mark escaped players and disable interaction
+                playerView.text = "${players[i]} - Escaped (Score: ${escapedPlayerItems[players[i]]} pts)"
+                playerView.isEnabled = false
+            } else {
+                // Set onClickListener for PlayerTurnActivity
+                playerView.setOnClickListener {
+                    val intent = Intent(this, PlayerTurnActivity::class.java).apply {
+                        putExtra("playerName", players[i])
+                        putStringArrayListExtra("playerItems", playerItems?.get(players[i]) ?: arrayListOf())
+                        putStringArrayListExtra("players", ArrayList(players))
+                        putStringArrayListExtra("colors", ArrayList(colors))
+                        putExtra("playerItemsMap", HashMap(playerItems))
+                        putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
+                        putExtra("currentNight", currentNight)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
             }
             playerContainer.addView(playerView)
         }
@@ -59,10 +69,12 @@ class NightScreenActivity : AppCompatActivity() {
                 putExtra("currentNight", currentNight)
                 putStringArrayListExtra("players", ArrayList(players))
                 putStringArrayListExtra("colors", ArrayList(colors))
+                putExtra("escapedPlayerItems", HashMap(escapedPlayerItems)) // Pass the scores
             }
             startActivity(intent)
             finish()
         }
+
 
         // Buttons
         findViewById<Button>(R.id.calculator_button).setOnClickListener {

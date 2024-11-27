@@ -16,9 +16,25 @@ class EndNightActivity : AppCompatActivity() {
         val players = intent.getStringArrayListExtra("players") ?: arrayListOf()
         val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
 
-        // Update rank placeholder text
-        findViewById<TextView>(R.id.rank_text).text = "Rank is supposed to show here"
+        // Retrieve escaped player items (scores)
+        val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
 
+        // Generate and display ranks
+        val rankTextView = findViewById<TextView>(R.id.rank_text)
+        if (escapedPlayerItems.isNotEmpty()) {
+            // Sort players by scores in descending order
+            val rankedPlayers = escapedPlayerItems.entries.sortedByDescending { it.value }
+
+            // Build rank display text
+            val rankDisplay = rankedPlayers.joinToString(separator = "\n") { (player, score) ->
+                "$player: $score pts"
+            }
+            rankTextView.text = rankDisplay
+        } else {
+            rankTextView.text = "No scores to display."
+        }
+
+        // Configure the action button
         val nextButton = findViewById<Button>(R.id.action_button)
         if (currentNight < 3) {
             nextButton.text = "Next Night"
