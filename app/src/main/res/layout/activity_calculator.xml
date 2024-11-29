@@ -6,11 +6,46 @@
     android:gravity="center"
     android:padding="16dp">
 
+    <!-- First Input Field -->
+    <EditText
+        android:id="@+id/input_number1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter first number"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Second Input Field -->
+    <EditText
+        android:id="@+id/input_number2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter second number"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Add Button -->
+    <Button
+        android:id="@+id/button_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Subtract Button -->
+    <Button
+        android:id="@+id/button_subtract"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Result Display -->
     <TextView
-        android:id="@+id/calculator_placeholder"
+        android:id="@+id/result_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calculator screen (to be implemented)"
+        android:text="Result: "
         android:textSize="18sp"
         android:textColor="#000000" />
 </LinearLayout>
