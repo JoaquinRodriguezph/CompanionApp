@@ -15,6 +15,15 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
+    <TextView
+        android:id="@+id/round_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Round 1"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
     <!-- Player container -->
     <LinearLayout
         android:id="@+id/player_container"
@@ -24,6 +33,7 @@
         android:layout_gravity="center" />
 
     <!-- Buttons -->
+
     <Button
         android:id="@+id/end_night_button"
         android:layout_width="wrap_content"
@@ -31,6 +41,12 @@
         android:layout_gravity="center_horizontal"
         android:text="End Night"
         android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/end_round_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="End Round" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +70,7 @@
                 android:id="@+id/question_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="?" />
+                android:text="FAQS" />
 
             <Button
                 android:id="@+id/map_button"

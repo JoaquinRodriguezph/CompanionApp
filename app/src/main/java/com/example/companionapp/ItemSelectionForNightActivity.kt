@@ -24,6 +24,8 @@ class ItemSelectionForNightActivity : AppCompatActivity() {
     private lateinit var confirmButton: Button
     private lateinit var playerRecyclerView: RecyclerView
     private lateinit var playerAdapter: PlayerAdapter
+    private val escapedPlayerItems = hashMapOf<String, Int>() // For scores
+    private val playerTurnCounts = hashMapOf<String, Int>()   // For turn counts
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +77,15 @@ class ItemSelectionForNightActivity : AppCompatActivity() {
     }
 
     private fun proceedToNightActivity() {
+        val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
+        val passedTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
+        playerTurnCounts.putAll(passedTurnCounts)
         val intent = Intent(this, NightScreenActivity::class.java).apply {
             putStringArrayListExtra("players", ArrayList(players)) // Pass players
             putStringArrayListExtra("colors", ArrayList(colors))   // Pass colors
             putExtra("playerItems", HashMap(playerItems))          // Pass playerItems
+            putExtra("escapedPlayerItems", HashMap(escapedPlayerItems)) // Pass scores
+            putExtra("playerTurnCounts", HashMap(playerTurnCounts)) // Pass turn count
             putExtra("currentNight", intent.getIntExtra("currentNight", 1)) // Increment night count
         }
         startActivity(intent)

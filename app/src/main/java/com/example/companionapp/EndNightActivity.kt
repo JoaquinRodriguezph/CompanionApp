@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class EndNightActivity : AppCompatActivity() {
+    private val playerTurnCounts = mutableMapOf<String, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +19,8 @@ class EndNightActivity : AppCompatActivity() {
 
         // Retrieve escaped player items (scores)
         val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
+        val passedTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
+        playerTurnCounts.putAll(passedTurnCounts)
 
         // Generate and display ranks
         val rankTextView = findViewById<TextView>(R.id.rank_text)
@@ -43,7 +46,9 @@ class EndNightActivity : AppCompatActivity() {
                 val intent = Intent(this, ItemSelectionForNightActivity::class.java).apply {
                     putExtra("currentNight", currentNight + 1) // Increment night
                     putStringArrayListExtra("players", ArrayList(players)) // Pass players
-                    putStringArrayListExtra("colors", ArrayList(colors))   // Pass colors
+                    putStringArrayListExtra("colors", ArrayList(colors))   // Pass
+                    putExtra("escapedPlayerItems", HashMap(escapedPlayerItems)) // Pass scores
+                    putExtra("playerTurnCounts", HashMap(playerTurnCounts)) // Pass turn counts
                 }
                 startActivity(intent)
                 finish() // Close this activity to prevent going back to it

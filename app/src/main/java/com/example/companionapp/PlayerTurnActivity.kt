@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
@@ -13,13 +16,20 @@ import androidx.appcompat.app.AppCompatActivity
 class PlayerTurnActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
-
+    private lateinit var vibrator: Vibrator
+    private lateinit var timerTextView: TextView
+    private var remainingTime: Long = 15000 // 15 seconds in milliseconds
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_turn)
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("PlayerTurnPrefs", Context.MODE_PRIVATE)
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        // Initialize the timer text view
+        timerTextView = findViewById(R.id.timer_text)
+        startCountdown()
 
         // Get player data from the intent
         val playerName = intent.getStringExtra("playerName") ?: "Player"
@@ -28,15 +38,10 @@ class PlayerTurnActivity : AppCompatActivity() {
         val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
         val playerItemsMap = intent.getSerializableExtra("playerItemsMap") as? HashMap<String, ArrayList<String>>
         val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
+        val playerTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
         val currentNight = intent.getIntExtra("currentNight", 1)
-        // Calculate score for the player
-        val totalPoints = calculateScore(playerItems)
-        escapedPlayerItems[playerName] = totalPoints
-
-        println("Player Name: $playerName")
-        println("Player Items: $playerItems")
-        println("Player Score: $totalPoints")
-        println("Updated Escaped Players: $escapedPlayerItems")
+        val currentRound = intent.getIntExtra("currentRound", 1)
+        val playerStatus = intent.getSerializableExtra("playerStatus") as? HashMap<String, Boolean> ?: hashMapOf()
 
         // Set player title
         val playerTitle = findViewById<TextView>(R.id.player_title)
@@ -68,32 +73,81 @@ class PlayerTurnActivity : AppCompatActivity() {
         // Escape button
         findViewById<Button>(R.id.escape_button).setOnClickListener {
             val totalPoints = calculateScore(selectedItems)
-            escapedPlayerItems[playerName] = totalPoints // Record escaped player's score
-            println("Updated escapedPlayerItems: $escapedPlayerItems")
-
+            val previousScore = escapedPlayerItems[playerName] ?: 0
+            escapedPlayerItems[playerName] = previousScore + totalPoints
+            playerStatus[playerName] = true // Mark player as escaped
+            // Increment turn count
+            playerTurnCounts[playerName] = (playerTurnCounts[playerName] ?: 0) + 1
 
             val intent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(players))
                 putStringArrayListExtra("colors", ArrayList(colors))
                 putExtra("playerItems", HashMap(playerItemsMap))
                 putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
+                putExtra("playerStatus", HashMap(playerStatus))
+                putExtra("playerTurnCounts", HashMap(playerTurnCounts))
                 putExtra("currentNight", currentNight)
+                putExtra("currentRound", currentRound) // Pass the current round
             }
             startActivity(intent)
             finish()
         }
 
-        // End Turn button remains unchanged
+        // End Turn button
         findViewById<Button>(R.id.end_turn_button).setOnClickListener {
+            // Increment turn count
+            playerTurnCounts[playerName] = (playerTurnCounts[playerName] ?: 0) + 1
+
             val intent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(players))
                 putStringArrayListExtra("colors", ArrayList(colors))
                 putExtra("playerItems", HashMap(playerItemsMap))
                 putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
+                putExtra("playerTurnCounts", HashMap(playerTurnCounts))
                 putExtra("currentNight", currentNight)
+                putExtra("currentRound", currentRound) // Pass the current round
             }
             startActivity(intent)
             finish()
+        }
+        // Enable the back button in the toolbar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Map"
+
+        // Handle back button press in toolbar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun startCountdown() {
+        val countDownTimer = object : CountDownTimer(remainingTime, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsLeft = millisUntilFinished / 1000
+                timerTextView.text = "Time Left: $secondsLeft"
+
+                // Start vibration at the 10-second mark
+                if (secondsLeft <= 5) {
+                    vibrateIncreasingly()
+                }
+            }
+
+            override fun onFinish() {
+                // Time's up, navigate to NightTurnActivity
+                navigateToNightScreen()
+            }
+        }
+        countDownTimer.start()
+    }
+
+    private fun vibrateIncreasingly() {
+        // Start vibration with increasing intensity
+        if (vibrator.hasVibrator()) {
+            val vibrationPattern = longArrayOf(0, 200, 100, 300, 100, 400) // Vibration starts from 200ms, increasing with intervals
+            val repeat = -1 // Do not repeat after the final vibration
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, repeat))
+            } else {
+                vibrator.vibrate(vibrationPattern, repeat)
+            }
         }
     }
 
@@ -126,4 +180,40 @@ class PlayerTurnActivity : AppCompatActivity() {
         println("Calculating score for items: $items -> Total: $total")
         return total
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        navigateToNightScreen()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        navigateToNightScreen()
+        return true
+    }
+
+    private fun navigateToNightScreen() {
+        val playerName = intent.getStringExtra("playerName") ?: "Player"
+        val players = intent.getStringArrayListExtra("players") ?: arrayListOf()
+        val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
+        val playerItemsMap = intent.getSerializableExtra("playerItemsMap") as? HashMap<String, ArrayList<String>>
+        val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
+        val playerTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
+        val currentNight = intent.getIntExtra("currentNight", 1)
+        val currentRound = intent.getIntExtra("currentRound", 1)
+
+
+        val intent = Intent(this, NightScreenActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT // Bring existing instance to front
+            putStringArrayListExtra("players", ArrayList(players))
+            putStringArrayListExtra("colors", ArrayList(colors))
+            putExtra("playerItems", HashMap(playerItemsMap))
+            putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
+            putExtra("playerTurnCounts", HashMap(playerTurnCounts))
+            putExtra("currentNight", currentNight)
+            putExtra("currentRound", currentRound)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+
 }

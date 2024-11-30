@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 class NightScreenActivity : AppCompatActivity() {
 
+    private var currentRound = 1
+    private val playerTurnCounts = mutableMapOf<String, Int>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_night_screen)
@@ -20,32 +23,38 @@ class NightScreenActivity : AppCompatActivity() {
         val colors = intent.getStringArrayListExtra("colors") ?: arrayListOf()
         val playerItems = intent.getSerializableExtra("playerItems") as? HashMap<String, ArrayList<String>>
         val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
-        println("Received escapedPlayerItems: $escapedPlayerItems")
-        val currentNight = intent.getIntExtra("currentNight", 1)
+        val passedTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
+        currentRound = intent.getIntExtra("currentRound", 1)
 
-        // Update night title
+        playerTurnCounts.putAll(passedTurnCounts)
+
+        // Update night title and round display
         val nightTitle = findViewById<TextView>(R.id.night_title)
-        nightTitle.text = "Night $currentNight"
+        nightTitle.text = "Night ${intent.getIntExtra("currentNight", 1)}"
+
+        val roundDisplay = findViewById<TextView>(R.id.round_display)
+        roundDisplay.text = "Round $currentRound"
 
         // Populate players dynamically
         val playerContainer = findViewById<LinearLayout>(R.id.player_container)
         playerContainer.removeAllViews()
 
+        val playerStatus = intent.getSerializableExtra("playerStatus") as? HashMap<String, Boolean> ?: hashMapOf()
+        players.forEach { playerStatus.putIfAbsent(it, false) }
+
         for (i in players.indices) {
             val playerView = TextView(this)
-            playerView.text = players[i]
+            val turnCount = playerTurnCounts[players[i]] ?: 0
+            val score = escapedPlayerItems[players[i]] ?: 0
+            playerView.text = "${players[i]} - Score: $score, Turns: $turnCount"
             playerView.setBackgroundColor(Color.parseColor(getColorFromName(colors[i])))
             playerView.setTextColor(Color.BLACK)
             playerView.textSize = 18f
             playerView.setPadding(16, 16, 16, 16)
 
-            // Set onClickListener for PlayerTurnActivity
-            if (escapedPlayerItems.containsKey(players[i])) {
-                // Mark escaped players and disable interaction
-                playerView.text = "${players[i]} - Escaped (Score: ${escapedPlayerItems[players[i]]} pts)"
+            if (playerStatus[players[i]] == true || currentRound > 7) {
                 playerView.isEnabled = false
             } else {
-                // Set onClickListener for PlayerTurnActivity
                 playerView.setOnClickListener {
                     val intent = Intent(this, PlayerTurnActivity::class.java).apply {
                         putExtra("playerName", players[i])
@@ -54,27 +63,41 @@ class NightScreenActivity : AppCompatActivity() {
                         putStringArrayListExtra("colors", ArrayList(colors))
                         putExtra("playerItemsMap", HashMap(playerItems))
                         putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
-                        putExtra("currentNight", currentNight)
+                        putExtra("playerStatus", HashMap(playerStatus))
+                        putExtra("playerTurnCounts", HashMap(playerTurnCounts))
+                        putExtra("currentNight", intent.getIntExtra("currentNight", 1))
+                        putExtra("currentRound", currentRound)
                     }
                     startActivity(intent)
+                    finish()
                 }
             }
             playerContainer.addView(playerView)
         }
 
-        // End Night button clears SharedPreferences
-        findViewById<Button>(R.id.end_night_button).setOnClickListener {
-            clearCheckboxState()
-            val intent = Intent(this, EndNightActivity::class.java).apply {
-                putExtra("currentNight", currentNight)
-                putStringArrayListExtra("players", ArrayList(players))
-                putStringArrayListExtra("colors", ArrayList(colors))
-                putExtra("escapedPlayerItems", HashMap(escapedPlayerItems)) // Pass the scores
+        // End Round button
+        val endRoundButton = findViewById<Button>(R.id.end_round_button)
+        endRoundButton.setOnClickListener {
+            if (currentRound < 7) {
+                currentRound++
+                val intent = Intent(this, NightScreenActivity::class.java).apply {
+                    putStringArrayListExtra("players", ArrayList(players))
+                    putStringArrayListExtra("colors", ArrayList(colors))
+                    putExtra("playerItems", HashMap(playerItems))
+                    putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
+                    putExtra("playerStatus", HashMap(playerStatus))
+                    putExtra("playerTurnCounts", HashMap(playerTurnCounts))
+                    putExtra("currentNight", intent.getIntExtra("currentNight", 1))
+                    putExtra("currentRound", currentRound)
+                }
+                startActivity(intent)
+                finish()
             }
-            startActivity(intent)
-            finish()
         }
 
+        if (currentRound >= 7) {
+            endRoundButton.isEnabled = false
+        }
 
         // Buttons
         findViewById<Button>(R.id.calculator_button).setOnClickListener {
@@ -88,11 +111,19 @@ class NightScreenActivity : AppCompatActivity() {
         findViewById<Button>(R.id.map_button).setOnClickListener {
             startActivity(Intent(this, MapPopUpActivity::class.java))
         }
-    }
 
-    private fun clearCheckboxState() {
-        val sharedPreferences = getSharedPreferences("PlayerTurnPrefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit().clear().apply()
+        // End Night button
+        findViewById<Button>(R.id.end_night_button).setOnClickListener {
+            val intent = Intent(this, EndNightActivity::class.java).apply {
+                putExtra("currentNight", intent.getIntExtra("currentNight", 1))
+                putStringArrayListExtra("players", ArrayList(players))
+                putStringArrayListExtra("colors", ArrayList(colors))
+                putExtra("escapedPlayerItems", HashMap(escapedPlayerItems)) //score
+                putExtra("playerTurnCounts", HashMap(playerTurnCounts)) //turns
+            }
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun getColorFromName(colorName: String): String {
