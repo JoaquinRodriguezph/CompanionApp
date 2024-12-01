@@ -24,14 +24,30 @@ class EndNightActivity : AppCompatActivity() {
 
         // Generate and display ranks
         val rankTextView = findViewById<TextView>(R.id.rank_text)
-        if (escapedPlayerItems.isNotEmpty()) {
-            // Sort players by scores in descending order
-            val rankedPlayers = escapedPlayerItems.entries.sortedByDescending { it.value }
 
-            // Build rank display text
-            val rankDisplay = rankedPlayers.joinToString(separator = "\n") { (player, score) ->
-                "$player: $score pts"
+        if (escapedPlayerItems.isNotEmpty()) {
+            val comparator = Comparator<Map.Entry<String, Int>> { entry1, entry2 ->
+                val score1 = entry1.value
+                val score2 = entry2.value
+                val turnCount1 = passedTurnCounts[entry1.key] ?: 0
+                val turnCount2 = passedTurnCounts[entry2.key] ?: 0
+
+                //Returns score placement of two different scores sorted in descending order
+                if (score1 != score2) {
+                    return@Comparator score2 - score1
+                } else { // If there is a tie, returns score placement sorted by turns in ascending order
+                    return@Comparator turnCount1 - turnCount2
+                }
             }
+
+            // Sort players
+            val rankedPlayers = escapedPlayerItems.entries.sortedWith(comparator)
+
+            // Display text rankings
+            val rankDisplay = rankedPlayers.joinToString(separator = "\n") { (player, score) ->
+                "$player: $score pts (took ${passedTurnCounts[player] ?: 0} turns)"
+            }
+
             rankTextView.text = rankDisplay
         } else {
             rankTextView.text = "No scores to display."
