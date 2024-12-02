@@ -19,6 +19,8 @@ class PlayerTurnActivity : AppCompatActivity() {
     private lateinit var vibrator: Vibrator
     private lateinit var timerTextView: TextView
     private var remainingTime: Long = 15000 // 15 seconds in milliseconds
+    private var countDownTimer: CountDownTimer? = null // Keep a reference to the timer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_turn)
@@ -119,7 +121,7 @@ class PlayerTurnActivity : AppCompatActivity() {
     }
 
     private fun startCountdown() {
-        val countDownTimer = object : CountDownTimer(remainingTime, 1000) {
+        countDownTimer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
                 timerTextView.text = "Time Left: $secondsLeft"
@@ -135,7 +137,7 @@ class PlayerTurnActivity : AppCompatActivity() {
                 navigateToNightScreen()
             }
         }
-        countDownTimer.start()
+        .start()
     }
 
     private fun vibrateIncreasingly() {
@@ -149,6 +151,17 @@ class PlayerTurnActivity : AppCompatActivity() {
                 vibrator.vibrate(vibrationPattern, repeat)
             }
         }
+    }
+
+    // Cancel the timer when leaving the activity
+    override fun onPause() {
+        super.onPause()
+        countDownTimer?.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer?.cancel() // Ensure the timer is canceled if the activity is destroyed
     }
 
     // Save checkbox state to SharedPreferences
