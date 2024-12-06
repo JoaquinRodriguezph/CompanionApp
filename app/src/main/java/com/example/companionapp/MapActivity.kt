@@ -32,6 +32,7 @@ class MapActivity : AppCompatActivity() {
 
         val rootView = findViewById<View>(android.R.id.content)
         rootView.setOnClickListener {
+            // Launch NightScreenActivity on click
             val nightIntent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(selectedPlayers)) // Pass selected players
                 putStringArrayListExtra("colors", ArrayList(selectedColors))  // Pass corresponding colors
@@ -39,5 +40,22 @@ class MapActivity : AppCompatActivity() {
             }
             startActivity(nightIntent)
         }
+
+        // Call MapPopUpActivity during initialization
+        launchMapPopUpActivity()
     }
+
+    /**
+     * Launches MapPopUpActivity as a separate activity
+     */
+    private fun launchMapPopUpActivity() {
+        try {
+            val mapPopUpIntent = Intent(this, MapPopUpActivity::class.java)
+            startActivity(mapPopUpIntent)
+        } catch (e: Exception) {
+            Log.e("MapActivity", "Error launching MapPopUpActivity: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
 }

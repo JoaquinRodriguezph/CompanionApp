@@ -1,19 +1,31 @@
 package com.example.companionapp
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class MapPopUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_popup)
 
-        // Enable the back button in the toolbar
+        // Set up the Toolbar as the ActionBar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // Enable the back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Map"
 
-        // Handle back button press in toolbar
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // Initialize the grid if not already done
+        MapManager.instance.initializeGrid()
+
+        // Render the grid
+        val gridView: GridView = findViewById(R.id.mapGridView)
+        val gridAdapter = GridAdapter(this, MapManager.instance.getGrid())
+        gridView.adapter = gridAdapter
     }
 
     override fun onSupportNavigateUp(): Boolean {
