@@ -79,7 +79,7 @@ class PlayerTurnActivity : AppCompatActivity() {
             escapedPlayerItems[playerName] = previousScore + totalPoints
             playerStatus[playerName] = true // Mark player as escaped
             // Increment turn count
-            playerTurnCounts[playerName] = currentRound
+            playerTurnCounts[playerName] = (playerTurnCounts[playerName] ?: 0) + currentRound
 
             val intent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(players))
