@@ -39,13 +39,6 @@ class ItemSelectionActivity : AppCompatActivity() {
             return
         }
 
-        // Adjust items based on the number of players
-        if (players.size == 3) {
-            items["Bronze"]?.remove("Sunglasses")
-            items["Silver"]?.remove("Autograph")
-            items["Silver"]?.remove("Watch")
-            items["Gold"]?.remove("Gold Bars")
-        }
 
         confirmButton = findViewById(R.id.confirm_button)
         playerRecyclerView = findViewById(R.id.player_recycler_view)
