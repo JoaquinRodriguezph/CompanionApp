@@ -43,9 +43,4 @@
         android:text="Escape"
         android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/end_turn_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="End Turn"/>
 </LinearLayout>

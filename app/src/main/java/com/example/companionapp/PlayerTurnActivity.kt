@@ -79,7 +79,7 @@ class PlayerTurnActivity : AppCompatActivity() {
             escapedPlayerItems[playerName] = previousScore + totalPoints
             playerStatus[playerName] = true // Mark player as escaped
             // Increment turn count
-            playerTurnCounts[playerName] = (playerTurnCounts[playerName] ?: 0) + 1
+            playerTurnCounts[playerName] = currentRound
 
             val intent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(players))
@@ -95,23 +95,6 @@ class PlayerTurnActivity : AppCompatActivity() {
             finish()
         }
 
-        // End Turn button
-        findViewById<Button>(R.id.end_turn_button).setOnClickListener {
-            // Increment turn count
-            playerTurnCounts[playerName] = (playerTurnCounts[playerName] ?: 0) + 1
-
-            val intent = Intent(this, NightScreenActivity::class.java).apply {
-                putStringArrayListExtra("players", ArrayList(players))
-                putStringArrayListExtra("colors", ArrayList(colors))
-                putExtra("playerItems", HashMap(playerItemsMap))
-                putExtra("escapedPlayerItems", HashMap(escapedPlayerItems))
-                putExtra("playerTurnCounts", HashMap(playerTurnCounts))
-                putExtra("currentNight", currentNight)
-                putExtra("currentRound", currentRound) // Pass the current round
-            }
-            startActivity(intent)
-            finish()
-        }
         // Enable the back button in the toolbar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Map"

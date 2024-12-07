@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class MapActivity : AppCompatActivity() {
@@ -30,8 +31,8 @@ class MapActivity : AppCompatActivity() {
         val selectedColors = colors ?: arrayListOf()
         val selectedPlayerItems = playerItems ?: hashMapOf()
 
-        val rootView = findViewById<View>(android.R.id.content)
-        rootView.setOnClickListener {
+        val nextNightButton = findViewById<Button>(R.id.next_night_button)
+        nextNightButton.setOnClickListener {
             // Launch NightScreenActivity on click
             val nightIntent = Intent(this, NightScreenActivity::class.java).apply {
                 putStringArrayListExtra("players", ArrayList(selectedPlayers)) // Pass selected players
