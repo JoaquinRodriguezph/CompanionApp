@@ -114,6 +114,13 @@ class NightScreenActivity : AppCompatActivity() {
 
         // End Night button
         findViewById<Button>(R.id.end_night_button).setOnClickListener {
+            // Increment turn counts for players who haven't escaped
+            players.forEach { player ->
+                if (playerStatus[player] == false) { // Check if the player hasn't escaped
+                    playerTurnCounts[player] = (playerTurnCounts[player] ?: 0) + currentRound
+                }
+            }
+
             val intent = Intent(this, EndNightActivity::class.java).apply {
                 putExtra("currentNight", intent.getIntExtra("currentNight", 1))
                 putStringArrayListExtra("players", ArrayList(players))
