@@ -1,5 +1,6 @@
 package com.example.companionapp
 
+import android.util.Log
 import kotlin.random.Random
 
 class MapManager private constructor() {
@@ -10,7 +11,7 @@ class MapManager private constructor() {
         val instance: MapManager by lazy { MapManager() }
     }
 
-    fun initializeGrid() {
+    fun initializeGrid(playerItems: HashMap<String, ArrayList<String>>?) {
         if (isInitialized) return // Prevent reinitialization
 
         // Define rooms and walls
@@ -42,28 +43,30 @@ class MapManager private constructor() {
         }
 
         // Spawn items
-        spawnItems()
+        spawnItems(playerItems)
 
         isInitialized = true
     }
 
-    private fun spawnItems() {
-        val bronzeItems = listOf("Toothbrush", "Mug", "Umbrella", "Slippers", "Sunglasses", "Saltshaker")
-        val silverItems = listOf("Console", "Sneakers", "Telephone", "Autograph", "Fancy Underwear", "Watch", "Gold Earrings")
-        val goldItems = listOf("Gold Bars", "Guitar", "TV", "Smart Fridge", "Vinyl Record", "Massage Chair", "Painting")
+    private fun spawnItems(playerItems: HashMap<String, ArrayList<String>>?) {
 
         val walkableTiles = grid.flatten().filter { it.type == TileType.WALKABLE && !it.hasDoor }
-        val random = Random.Default
+        var i = 0
+        val allItems = playerItems?.values?.flatten()?.shuffled()?.map { item ->
+            // Use regex to extract the portion after the colon and space
+            item.replace(".*?:\\s*(.*)".toRegex(), "$1")
+        } ?: listOf()  // Safe call and fallback to empty list
 
         walkableTiles.shuffled().take(16).forEach { tile ->
-            val itemCategory = random.nextInt(3)
-            tile.item = when (itemCategory) {
-                0 -> bronzeItems.random()
-                1 -> silverItems.random()
-                else -> goldItems.random()
+            if (i < allItems.size) {
+                tile.item = allItems[i]
+                Log.d("MapManager", "item=${tile.item}")
+                i++
             }
         }
     }
+
+
 
     fun getGrid(): Array<Array<Tile>> = grid
 }

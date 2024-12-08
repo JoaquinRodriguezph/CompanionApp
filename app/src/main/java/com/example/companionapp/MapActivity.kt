@@ -40,9 +40,19 @@ class MapActivity : AppCompatActivity() {
             }
             startActivity(nightIntent)
         }
-
+        Log.d("MapActivity", "LaunchingActivity Player Items: $playerItems")
         // Call MapPopUpActivity during initialization
-        launchMapPopUpActivity()
+        //launchMapPopUpActivity()
+
+        try {
+            val mapPopUpIntent = Intent(this, MapPopUpActivity::class.java).apply {
+                putExtra("playerItems", playerItems)
+            }
+            startActivity(mapPopUpIntent)
+        } catch (e: Exception) {
+            Log.e("MapActivity", "Error launching MapPopUpActivity: ${e.message}")
+            e.printStackTrace()
+        }
     }
 
     /**
@@ -57,5 +67,4 @@ class MapActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
 }
