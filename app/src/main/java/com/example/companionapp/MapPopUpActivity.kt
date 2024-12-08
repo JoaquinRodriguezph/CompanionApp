@@ -25,7 +25,7 @@ class MapPopUpActivity : AppCompatActivity() {
         val playerItems = intent.getSerializableExtra("playerItems") as? HashMap<String, ArrayList<String>>
 
         // Initialize the grid if not already done
-        MapManager.instance.initializeGrid(playerItems) //passintentproperly
+        MapManager.instance.initializeGrid(playerItems)
 
 
         // Render the grid
