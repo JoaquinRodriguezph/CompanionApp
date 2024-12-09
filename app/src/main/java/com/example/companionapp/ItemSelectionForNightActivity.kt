@@ -73,7 +73,7 @@ class ItemSelectionForNightActivity : AppCompatActivity() {
         val escapedPlayerItems = intent.getSerializableExtra("escapedPlayerItems") as? HashMap<String, Int> ?: hashMapOf()
         val passedTurnCounts = intent.getSerializableExtra("playerTurnCounts") as? HashMap<String, Int> ?: hashMapOf()
         playerTurnCounts.putAll(passedTurnCounts)
-        val intent = Intent(this, NightScreenActivity::class.java).apply {
+        val intent = Intent(this, MapActivity::class.java).apply {
             putStringArrayListExtra("players", ArrayList(players)) // Pass players
             putStringArrayListExtra("colors", ArrayList(colors))   // Pass colors
             putExtra("playerItems", HashMap(playerItems))          // Pass playerItems
@@ -84,4 +84,5 @@ class ItemSelectionForNightActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
 }
