@@ -94,6 +94,7 @@ class GridAdapter(
             }
         )
 
+        imageView.setBackgroundColor(android.graphics.Color.parseColor("#7f6669"))
         // Debug: Log the item assigned to the tile
         Log.d("GridAdapter", "Tile at position $position: item=${tile.item}, type=${tile.type}, hasDoor=${tile.hasDoor}")
 
